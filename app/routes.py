@@ -1,10 +1,26 @@
 from flask import Blueprint, jsonify
+import datetime
 
-main = Blueprint('main', __name__)
+api_blueprint = Blueprint('api', __name__, url_prefix='/api')
 
-@main.route("/")
-def home():
-    return jsonify({"message": "Hello, Flask in Docker!"})
+@api_blueprint.route('/test', methods=['GET'])
+def test_endpoint():
+    """Приклад ендпоінту, що повертає JSON"""
+    return jsonify({
+        "status": "success",
+        "message": "Hello from Flask Backend!",
+        "timestamp": datetime.datetime.now().isoformat(),
+        "data": {
+            "user": "Anonymous",
+            "items": [1, 2, 3]
+        }
+    })
 
-def init_routes(app):
-    app.register_blueprint(main)
+@api_blueprint.route('/echo', methods=['POST'])
+def echo_endpoint():
+    """Ендпоінт, що повертає отримані дані"""
+    from flask import request
+    return jsonify({
+        "status": "success",
+        "received_data": request.json
+    })
